@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 class TwoLayerNet(object):
   """
   A two-layer fully-connected neural network. The net has an input dimension of
@@ -66,9 +65,10 @@ class TwoLayerNet(object):
     W1, b1 = self.params['W1'], self.params['b1']
     W2, b2 = self.params['W2'], self.params['b2']
     N, D = X.shape
-
+    
     # Compute the forward pass
-    scores = None
+    scores = np.maximum(0,X.dot(W1) + b1)
+    scores = scores.dot(W2) + b2
     #############################################################################
     # TODO: Perform the forward pass, computing the class scores for the input. #
     # Store the result in the scores variable, which should be an array of      #
@@ -84,7 +84,10 @@ class TwoLayerNet(object):
       return scores
 
     # Compute the loss
-    loss = None
+    scores = np.exp(scores)
+    sum_class = np.sum(scores,axis=1)
+    correct_class_score = scores[np.arange(N),y]
+    loss = -np.sum(np.log(correct_class_score/sum_class))/float(N) + 0.5 * reg * np.sum(W1*W1)+0.5 * reg * np.sum(W2*W2)
     #############################################################################
     # TODO: Finish the forward pass, and compute the loss. This should include  #
     # both the data loss and L2 regularization for W1 and W2. Store the result  #
@@ -92,7 +95,6 @@ class TwoLayerNet(object):
     # classifier loss. So that your results match ours, multiply the            #
     # regularization loss by 0.5                                                #
     #############################################################################
-    pass
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
